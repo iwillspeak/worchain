@@ -1,4 +1,4 @@
-use markov_chain::Chain;
+use markov::Chain;
 
 const ALICE: &str = include_str!("../assets/11-0.txt");
 const FRANK: &str = include_str!("../assets/84-0.txt");
@@ -22,12 +22,13 @@ fn train_chain_on(chain: &mut Chain<char>, text: &str) {
         }
     });
     words.for_each(|word| {
-        chain.train(word.to_lowercase().chars().collect());
+        let chars = word.to_lowercase().chars().collect::<Vec<_>>();
+        chain.feed(chars);
     });
 }
 
 fn main() {
-    let mut chain = markov_chain::Chain::new(7);
+    let mut chain = markov::Chain::of_order(4);
     train_chain_on(&mut chain, ALICE);
     train_chain_on(&mut chain, FRANK);
     train_chain_on(&mut chain, JANE);
